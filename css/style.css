@@ -398,7 +398,7 @@ main {
 
 .nav-btn.active { opacity: 1; }
 .nav-icon { font-size: 1.4rem; }
-.nav-icon img { width: 26px; height: 26px; object-fit: contain; }
+.nav-icon img { width: 50px; height: 50px; object-fit: contain; }
 .nav-label { font-size: 0.68rem; font-weight: 600; }
 
 /* ---------- Écran de connexion ---------- */
