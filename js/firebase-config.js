@@ -36,7 +36,7 @@ export const customIcons = {
   logo: "", // logo en haut à gauche
   wallet: "icons/coins1.png", // icône à côté du solde de points
   navHome: "icons/coins1.png", // onglet Points
-  navStats: "icons/stats.png", // onglet Stats
-  navHistory: "icons/historique.png", // onglet Historique
-  navShop: "icons/shop1.png" // onglet Magasin
+  navStats: "icons/stats1.png", // onglet Stats
+  navHistory: "icons/historique1.png", // onglet Historique
+  navShop: "icons/shop2.png" // onglet Magasin
 };
