@@ -34,8 +34,8 @@ export const allowedEmails = [
 
 export const customIcons = {
   logo: "", // logo en haut à gauche
-  wallet: "icons/coins.png", // icône à côté du solde de points
-  navHome: "icons/coins.png", // onglet Points
+  wallet: "icons/coins1.png", // icône à côté du solde de points
+  navHome: "icons/coins1.png", // onglet Points
   navStats: "icons/stats.png", // onglet Stats
   navHistory: "icons/historique.png", // onglet Historique
   navShop: "icons/shop1.png" // onglet Magasin
