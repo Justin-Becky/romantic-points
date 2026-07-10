@@ -38,5 +38,5 @@ export const customIcons = {
   navHome: "icons/coins.png", // onglet Points
   navStats: "icons/stats.png", // onglet Stats
   navHistory: "icons/historique.png", // onglet Historique
-  navShop: "icons/shop.png" // onglet Magasin
+  navShop: "icons/shop1.png" // onglet Magasin
 };
