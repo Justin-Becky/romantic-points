@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Romantic Points</title>
+
+  <!-- Icône pour l'écran d'accueil iPhone -->
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Romantic Points">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff8fab">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Barre du haut avec le solde de points (comme de l'argent) -->
+  <header class="topbar">
+    <div class="app-title">
+      <img id="logo-img" class="custom-icon hidden" alt="">
+      <span id="logo-emoji">💖</span>
+      <span>Romantic Points</span>
+    </div>
+    <div class="wallet" id="wallet">
+      <span id="balance">0</span>
+      <img id="wallet-img" class="custom-icon hidden" alt="">
+      <span id="wallet-emoji">💗</span>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- PAGE 1 : Ajouter / enlever des points -->
+    <section class="page active" id="page-home">
+      <h2 class="page-title">Donner des points</h2>
+
+      <div class="pending-display" id="pending-display">
+        <span id="pending-amount" class="pending-zero">0</span>
+        <span class="pending-label" id="pending-label">choisis des points</span>
+      </div>
+
+      <div class="btn-grid">
+        <div class="btn-row plus-row">
+          <button class="point-btn plus" data-amount="1">+1</button>
+          <button class="point-btn plus" data-amount="3">+3</button>
+          <button class="point-btn plus" data-amount="5">+5</button>
+        </div>
+        <div class="btn-row minus-row">
+          <button class="point-btn minus" data-amount="-1">−1</button>
+          <button class="point-btn minus" data-amount="-3">−3</button>
+          <button class="point-btn minus" data-amount="-5">−5</button>
+        </div>
+      </div>
+
+      <textarea id="reason" class="reason-input" rows="2"
+        placeholder="La raison... (ex: tu m'as fait un dîner en amoureux surprise 🥰)"></textarea>
+
+      <div class="confirm-row">
+        <button id="cancel-btn" class="secondary-btn hidden">Annuler</button>
+        <button id="confirm-btn" class="confirm-btn" disabled>Confirmer 💝</button>
+      </div>
+    </section>
+
+    <!-- PAGE 2 : Statistiques -->
+    <section class="page" id="page-stats">
+      <h2 class="page-title">Statistiques</h2>
+
+      <div class="range-tabs" id="range-tabs">
+        <button class="range-btn active" data-range="day">Day</button>
+        <button class="range-btn" data-range="week">Week</button>
+        <button class="range-btn" data-range="month">Month</button>
+        <button class="range-btn" data-range="year">Year</button>
+        <button class="range-btn" data-range="all">All</button>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-net">0</span>
+          <span class="stat-name">Net Period</span>
+        </div>
+        <div class="stat-card gain">
+          <span class="stat-value" id="stat-gained">0</span>
+          <span class="stat-name">Gained</span>
+        </div>
+        <div class="stat-card loss">
+          <span class="stat-value" id="stat-lost">0</span>
+          <span class="stat-name">Lost</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="stats-chart"></canvas>
+      </div>
+    </section>
+
+    <!-- PAGE 3 : Historique -->
+    <section class="page" id="page-history">
+      <h2 class="page-title">Historique</h2>
+      <ul class="history-list" id="history-list">
+        <li class="empty-msg">Aucune transaction pour l'instant 💤</li>
+      </ul>
+    </section>
+
+    <!-- PAGE 4 : Magasin -->
+    <section class="page" id="page-shop">
+      <h2 class="page-title">Shop</h2>
+
+      <button id="add-item-btn" class="secondary-btn wide">＋ Ajouter un item</button>
+
+      <form id="add-item-form" class="add-item-form hidden">
+        <input type="text" id="item-name" placeholder="Nom (ex: un câlin)" required>
+        <input type="number" id="item-cost" placeholder="Prix en points" min="1" required>
+        <input type="text" id="item-icon" placeholder="Emoji ou chemin d'image (ex: 🤗 ou icons/calin.png)">
+        <div class="confirm-row">
+          <button type="button" id="item-cancel" class="secondary-btn">Annuler</button>
+          <button type="submit" class="confirm-btn">Ajouter</button>
+        </div>
+      </form>
+
+      <ul class="shop-list" id="shop-list">
+        <li class="empty-msg">Le magasin est vide, ajoute des récompenses 🛍️</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Navigation du bas -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="page-home">
+      <span class="nav-icon" data-icon="home">💖</span><span class="nav-label">Points</span>
+    </button>
+    <button class="nav-btn" data-page="page-stats">
+      <span class="nav-icon" data-icon="stats">📈</span><span class="nav-label">Stats</span>
+    </button>
+    <button class="nav-btn" data-page="page-history">
+      <span class="nav-icon" data-icon="history">📜</span><span class="nav-label">Historique</span>
+    </button>
+    <button class="nav-btn" data-page="page-shop">
+      <span class="nav-icon" data-icon="shop">🛍️</span><span class="nav-label">Magasin</span>
+    </button>
+  </nav>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
