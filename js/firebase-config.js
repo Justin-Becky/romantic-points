@@ -8,14 +8,24 @@
    ============================================ */
 
 export const firebaseConfig = {
-  apiKey: "COLLE_TA_API_KEY",
-  authDomain: "COLLE_TON_AUTH_DOMAIN",
-  projectId: "COLLE_TON_PROJECT_ID",
-  storageBucket: "COLLE_TON_STORAGE_BUCKET",
-  messagingSenderId: "COLLE_TON_SENDER_ID",
-  appId: "COLLE_TON_APP_ID"
+  apiKey: "AIzaSyAGv2pbDGhXjsGoAePHSuQnsxNSy1fHagk",
+  authDomain: "romantic-points-caa04.firebaseapp.com",
+  projectId: "romantic-points-caa04",
+  storageBucket: "romantic-points-caa04.firebasestorage.app",
+  messagingSenderId: "804644764715",
+  appId: "1:804644764715:web:3a4042e49f5e12b99b3e6e"
 };
+/* ============================================
+   Sécurité 🔒
+   Les courriels Google autorisés à utiliser l'app
+   (toi et ta blonde). Mets les mêmes dans les
+   règles Firestore (voir README).
+   ============================================ */
 
+export const allowedEmails = [
+  "justin.arseneault08@gmail.com",
+  "rebeccalemieux6@gmail.com"
+];
 /* ============================================
    Personnalisation des icônes 🎨
    Mets le chemin d'une de tes images (ex: "icons/coeur.png")
@@ -24,9 +34,9 @@ export const firebaseConfig = {
 
 export const customIcons = {
   logo: "", // logo en haut à gauche
-  wallet: "", // icône à côté du solde de points
-  navHome: "", // onglet Points
-  navStats: "", // onglet Stats
-  navHistory: "", // onglet Historique
-  navShop: "" // onglet Magasin
+  wallet: "icons/coins.png", // icône à côté du solde de points
+  navHome: "icons/coins.png", // onglet Points
+  navStats: "icons/stats.png", // onglet Stats
+  navHistory: "icons/historique.png", // onglet Historique
+  navShop: "icons/shop.png" // onglet Magasin
 };

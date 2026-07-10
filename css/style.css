@@ -401,6 +401,50 @@ main {
 .nav-icon img { width: 26px; height: 26px; object-fit: contain; }
 .nav-label { font-size: 0.68rem; font-weight: 600; }
 
+/* ---------- Écran de connexion ---------- */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--pink-bg), var(--pink-light));
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px 26px;
+  text-align: center;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.login-logo { width: 72px; height: 72px; }
+.login-card h1 { color: var(--pink-dark); font-size: 1.4rem; }
+.login-card p { opacity: 0.7; font-size: 0.95rem; }
+.login-card .confirm-btn, .login-card .secondary-btn { width: 100%; }
+
+.signout-btn {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  opacity: 0.5;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed;

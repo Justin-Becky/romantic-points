@@ -33,6 +33,17 @@
     </div>
   </header>
 
+  <!-- Écran de connexion (affiché seulement si Firebase est configuré) -->
+  <div id="login-overlay" class="login-overlay hidden">
+    <div class="login-card">
+      <img src="icons/icon-192.png" class="login-logo" alt="">
+      <h1>Romantic Points</h1>
+      <p id="login-msg">Connecte-toi pour voir vos points 💖</p>
+      <button id="google-btn" class="confirm-btn">Se connecter avec Google</button>
+      <button id="overlay-signout-btn" class="secondary-btn hidden">Se déconnecter</button>
+    </div>
+  </div>
+
   <main id="main">
 
     <!-- PAGE 1 : Ajouter / enlever des points -->
@@ -125,6 +136,8 @@
       <ul class="shop-list" id="shop-list">
         <li class="empty-msg">Le magasin est vide, ajoute des récompenses 🛍️</li>
       </ul>
+
+      <button id="signout-btn" class="signout-btn hidden">🚪 Se déconnecter</button>
     </section>
 
   </main>

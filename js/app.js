@@ -4,7 +4,7 @@
    est remplie, sinon en mode local (localStorage).
    ============================================ */
 
-import { firebaseConfig, customIcons } from "./firebase-config.js";
+import { firebaseConfig, customIcons, allowedEmails } from "./firebase-config.js";
 
 /* ---------- État global ---------- */
 let transactions = []; // {id, amount, reason, ts}
@@ -43,31 +43,109 @@ function setupCustomIcons() {
 
 /* ---------- Couche de données ---------- */
 let fs = null; // fonctions Firestore chargées dynamiquement
+let authMod = null;
+let auth = null;
+let listenersStarted = false;
 
 async function initData() {
   if (useFirebase) {
     const appMod = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js");
     fs = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js");
+    authMod = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js");
     const app = appMod.initializeApp(firebaseConfig);
     db = fs.getFirestore(app);
-
-    // Écoute en temps réel des transactions
-    fs.onSnapshot(fs.query(fs.collection(db, "transactions"), fs.orderBy("ts", "desc")), (snap) => {
-      transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll();
-    });
-
-    // Écoute en temps réel du magasin
-    fs.onSnapshot(fs.query(fs.collection(db, "shop"), fs.orderBy("cost", "asc")), (snap) => {
-      shopItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderShop();
-    });
+    auth = authMod.getAuth(app);
+    initAuth();
   } else {
     transactions = JSON.parse(localStorage.getItem("rp_transactions") || "[]");
     shopItems = JSON.parse(localStorage.getItem("rp_shop") || "[]");
     renderAll();
     renderShop();
   }
+}
+
+/* ---------- Authentification ---------- */
+function emailAllowed(email) {
+  // Si la liste n'est pas remplie, on laisse les règles Firestore décider
+  const filled = allowedEmails.filter(e => e && !e.startsWith("COURRIEL"));
+  return filled.length === 0 || filled.includes((email || "").toLowerCase());
+}
+
+function initAuth() {
+  const overlay = $("login-overlay");
+  const googleBtn = $("google-btn");
+  const overlaySignout = $("overlay-signout-btn");
+  const signoutBtn = $("signout-btn");
+  const msg = $("login-msg");
+
+  googleBtn.addEventListener("click", async () => {
+    if (location.protocol === "file:") {
+      msg.textContent = "⚠️ La connexion Google ne marche pas en ouvrant le fichier directement. Utilise l'URL GitHub Pages (ou un serveur local).";
+      return;
+    }
+    try {
+      await authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider());
+    } catch (err) {
+      // Sur iPhone en mode plein écran, le popup peut être bloqué:
+      // on bascule sur la redirection
+      if (err.code === "auth/popup-blocked" || err.code === "auth/operation-not-supported-in-this-environment") {
+        try {
+          await authMod.signInWithRedirect(auth, new authMod.GoogleAuthProvider());
+        } catch (err2) {
+          msg.textContent = "Erreur de connexion: " + (err2.code || err2.message);
+        }
+      } else if (err.code === "auth/unauthorized-domain") {
+        msg.textContent = "⚠️ Domaine non autorisé: ajoute " + location.hostname + " dans Firebase → Authentication → Settings → Authorized domains.";
+      } else if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") {
+        msg.textContent = "Erreur de connexion: " + (err.code || err.message);
+      }
+    }
+  });
+
+  const doSignOut = () => authMod.signOut(auth);
+  overlaySignout.addEventListener("click", doSignOut);
+  signoutBtn.addEventListener("click", () => {
+    if (confirm("Se déconnecter?")) doSignOut();
+  });
+
+  authMod.onAuthStateChanged(auth, (user) => {
+    if (user && emailAllowed(user.email)) {
+      // Connecté et autorisé: on cache l'écran et on charge les données
+      overlay.classList.add("hidden");
+      signoutBtn.classList.remove("hidden");
+      startListeners();
+    } else {
+      overlay.classList.remove("hidden");
+      signoutBtn.classList.add("hidden");
+      if (user) {
+        // Connecté mais pas dans la liste des courriels autorisés
+        msg.textContent = `Désolé, ${user.email} n'est pas autorisé 💔`;
+        googleBtn.classList.add("hidden");
+        overlaySignout.classList.remove("hidden");
+      } else {
+        msg.textContent = "Connecte-toi pour voir vos points 💖";
+        googleBtn.classList.remove("hidden");
+        overlaySignout.classList.add("hidden");
+      }
+    }
+  });
+}
+
+function startListeners() {
+  if (listenersStarted) return;
+  listenersStarted = true;
+
+  // Écoute en temps réel des transactions
+  fs.onSnapshot(fs.query(fs.collection(db, "transactions"), fs.orderBy("ts", "desc")), (snap) => {
+    transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAll();
+  });
+
+  // Écoute en temps réel du magasin
+  fs.onSnapshot(fs.query(fs.collection(db, "shop"), fs.orderBy("cost", "asc")), (snap) => {
+    shopItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderShop();
+  });
 }
 
 function saveLocal() {
@@ -382,7 +460,7 @@ document.querySelectorAll(".range-btn").forEach(btn => {
   });
 });
 
-/* ---------- Démarrage ---------- */
+/* ---------- Démarrage de l'app ---------- */
 setupCustomIcons();
 renderPending();
 initData();

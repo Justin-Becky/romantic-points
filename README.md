@@ -17,20 +17,33 @@ Ouvre `index.html` dans ton navigateur. Sans Firebase, l'app fonctionne en **mod
 5. Firebase t'affiche un bloc `const firebaseConfig = { ... }`. Copie les valeurs dans `js/firebase-config.js` à la place des `COLLE_...`.
 6. C'est tout! L'app se synchronise en temps réel entre vos deux téléphones.
 
-⚠️ Le mode test de Firestore expire après 30 jours. Ensuite, dans **Firestore → Règles**, mets:
+## Sécuriser l'app (connexion Google) 🔒
+
+L'app a un écran de connexion Google intégré. Pour l'activer:
+
+1. Dans Firebase: **Build → Authentication → Get started → Sign-in method → Google → Activer** (choisis ton courriel comme support), puis Save.
+2. Toujours dans Authentication: **Settings → Authorized domains → Add domain** et ajoute `TON-USERNAME.github.io`.
+3. Ouvre `js/firebase-config.js` et mets vos deux courriels Google dans `allowedEmails` (en minuscules).
+4. Dans **Firestore → Règles**, colle ceci (avec vos vrais courriels) puis **Publier**:
 
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if request.auth != null
+        && request.auth.token.email in [
+          'justin.arseneault@icloud.com',
+          'courriel.de.ta.blonde@gmail.com'
+        ];
     }
   }
 }
 ```
 
-(C'est ouvert à tous ceux qui ont l'URL — correct pour une app perso à deux, mais ne mets rien de privé dedans.)
+Résultat: seuls vos deux comptes Google peuvent lire ou modifier les points, même si quelqu'un trouve l'URL. Vous vous connectez une fois par appareil et ça reste connecté.
+
+⚠️ Note: la connexion Google demande un compte Google. Si ton adresse iCloud n'est pas liée à un compte Google, crée-toi un compte Google ou dis-moi de passer à l'option courriel/mot de passe.
 
 ## Déployer sur GitHub Pages
 
